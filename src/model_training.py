@@ -1,3 +1,5 @@
+import os
+import joblib
 from xgboost import XGBClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
@@ -5,52 +7,65 @@ from sklearn.metrics import classification_report
 class CreditModelTrainer:
     def __init__(self, df, target_column='loan_status'):
         """
-        Sınıf başlatıldığında temizlenmiş ve encode edilmiş veri setini alır.
+        Model eğitimi, değerlendirilmesi ve diske kaydedilmesinden sorumlu sınıf.
         """
         self.df = df
         self.target_column = target_column
-        self.model = None
-        self.X_train, self.X_test, self.y_train, self.y_test = [None] * 4
+        self.model = XGBClassifier(random_state=42, use_label_encoder=False, eval_metric='logloss')
+        self.X_train, self.X_test, self.y_train, self.y_test = None, None, None, None
 
-    def prepare_splits(self, test_size=0.2, random_state=42):
-        """Veriyi %80 Eğitim, %20 Test olarak kurumsal standartta böler."""
+    def prepare_splits(self):
+        """
+        Veriyi %80 Eğitim, %20 Test olarak böler. Finansal denge için stratify kullanır.
+        """
         X = self.df.drop(columns=[self.target_column])
         y = self.df[self.target_column]
         
-        # Finansal veri dengesizliği için stratify=y kullanıyoruz
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            X, y, 
-            test_size=test_size, 
-            random_state=random_state, 
-            stratify=y
+            X, y, test_size=0.2, random_state=42, stratify=y
         )
         print(f"[INFO] Veri bölündü. Eğitim: {self.X_train.shape}, Test: {self.X_test.shape}")
 
-    def train_xgboost(self, n_estimators=100, max_depth=5, learning_rate=0.1):
-        """XGBoost modelini tanımlar ve eğitir."""
+    def train_xgboost(self):
+        """
+        XGBoost modelini eğitir.
+        """
         print("[INFO] XGBoost model eğitimi başlıyor...")
-        self.model = XGBClassifier(
-            n_estimators=n_estimators,
-            max_depth=max_depth,
-            learning_rate=learning_rate,
-            random_state=42,
-            eval_metric='logloss'
-        )
         self.model.fit(self.X_train, self.y_train)
         print("[SUCCESS] Model başarıyla eğitildi.")
 
     def evaluate_model(self):
-        """Modelin test verisi üzerindeki performans raporunu basar."""
-        if self.model is None:
-            raise ValueError("Önce model eğitilmeli! train_xgboost() çağırılmalı.")
-        
+        """
+        Modelin test seti üzerindeki performansını raporlar.
+        """
         y_pred = self.model.predict(self.X_test)
         print("\n--- Model Performans Raporu ---")
         print(classification_report(self.y_test, y_pred))
+
+    def save_model(self):
+        """
+        Eğitilen modeli ve test setinin sütun yapısını 'models/' klasörüne kaydeder.
+        """
+        # Proje kök dizininde 'models' klasörü yoksa otomatik oluşturur
+        os.makedirs("models", exist_ok=True)
         
+        model_path = os.path.join("models", "credit_risk_model.joblib")
+        columns_path = os.path.join("models", "model_columns.joblib")
+        
+        # Modeli ve tahmin anında sütun kontrolü yapmak için özellikleri kaydediyoruz
+        joblib.dump(self.model, model_path)
+        joblib.dump(list(self.X_train.columns), columns_path)
+        
+        print(f"[SUCCESS] Model ve sütun yapısı başarıyla kaydedildi:")
+        print(f" -> {model_path}")
+        print(f" -> {columns_path}")
+
     def run_training_pipeline(self):
-        """Bölme, eğitme ve raporlama adımlarını sırasıyla otomatize eder."""
+        """
+        Tüm eğitim adımlarını sırasıyla tetikler.
+        """
         self.prepare_splits()
         self.train_xgboost()
         self.evaluate_model()
+        self.save_model() # Kaydetme fonksiyonunu pipeline'a dahil ettik
         return self.model
