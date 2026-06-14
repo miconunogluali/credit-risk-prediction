@@ -39,6 +39,11 @@ Ensure you have Python 3.11+ and the required packages installed:
 ```bash
 pip install xgboost scikit-learn pandas numpy matplotlib seaborn
 
+2. Execution
+Run the entire pipeline from data ingestion to model evaluation using the single entry point:
+
+Bash
+python main.py
 
 🛠️ Tech Stack
 Language: Python
