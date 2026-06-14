@@ -45,13 +45,9 @@ Run the entire pipeline from data ingestion to model evaluation using the single
 python main.py
 ```
 
-🛠️ Tech Stack
-Language: Python
-
-Frameworks: XGBoost, Scikit-Learn
-
-Data Analysis: Pandas, NumPy
-
-Visualization: Matplotlib, Seaborn
-
-Version Control: Git / GitHub
+## 🛠️ Tech Stack
+* **Language:** Python
+* **Frameworks:** XGBoost, Scikit-Learn
+* **Data Analysis:** Pandas, NumPy
+* **Visualization:** Matplotlib, Seaborn
+* **Version Control:** Git / GitHub
