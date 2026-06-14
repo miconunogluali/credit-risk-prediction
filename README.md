@@ -38,8 +38,8 @@ We utilized the **XGBoost (Extreme Gradient Boosting)** classifier, which is the
 Ensure you have Python 3.11+ and the required packages installed:
 ```bash
 pip install xgboost scikit-learn pandas numpy matplotlib seaborn
-
-2. Execution
+```
+### 2.Execution
 Run the entire pipeline from data ingestion to model evaluation using the single entry point:
 
 Bash
