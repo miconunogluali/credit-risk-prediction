@@ -43,6 +43,7 @@ pip install xgboost scikit-learn pandas numpy matplotlib seaborn
 Run the entire pipeline from data ingestion to model evaluation using the single entry point:
 ```bash
 python main.py
+```
 
 🛠️ Tech Stack
 Language: Python
