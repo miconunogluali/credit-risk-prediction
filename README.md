@@ -33,16 +33,15 @@ We utilized the **XGBoost (Extreme Gradient Boosting)** classifier, which is the
 ---
 
 ## 🚀 How to Run the Production Pipeline
-
 ### 1. Installation
 Ensure you have Python 3.11+ and the required packages installed:
 ```bash
-pip install xgboost scikit-learn pandas numpy matplotlib seaborn
+pip install xgboost scikit-learn pandas numpy matplotlib seaborn 
 ```
-### 2.Execution
-Run the entire pipeline from data ingestion to model evaluation using the single entry point:
 
-Bash
+### 2. Execution
+Run the entire pipeline from data ingestion to model evaluation using the single entry point:
+```bash
 python main.py
 
 🛠️ Tech Stack
